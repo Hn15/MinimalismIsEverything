@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimalism Is Everything</title>
+  
+  <!-- Sci-fi font: Orbitron (futuristic, similar vibe to Horizon) -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600&amp;display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #000000;
+      color: #eeeeee;
+      overflow: hidden;
+    }
+
+    /* Welcome - top left, fixed positioning */
+    .welcome {
+      position: absolute;
+      top: 35px;
+      left: 45px;
+      font-size: 1.15rem;
+      color: #aaaaaa;
+      font-weight: 400;
+      z-index: 10;
+      letter-spacing: 0.5px;
+    }
+
+    .header {
+      position: absolute;
+      top: 95px;                    /* moved down a bit for breathing room */
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.45rem;
+      font-weight: 500;
+      letter-spacing: 6px;
+      color: #ffffff;
+      text-transform: uppercase;
+      text-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.18),
+        0 0 45px rgba(80, 180, 255, 0.12);   /* subtle sci-fi cyan glow */
+    }
+
+    .time {
+      position: absolute;
+      top: 155px;
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: #bbbbbb;
+      letter-spacing: 4px;
+    }
+
+    .weather {
+      position: absolute;
+      top: 205px;
+      font-size: 1.18rem;
+      color: #777777;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .search-container {
+      width: 100%;
+      max-width: 720px;
+      padding: 0 20px;
+      margin-top: 80px;               /* pushed down to avoid overlap */
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 21px 34px;
+      font-size: 1.42rem;
+      border: 1.5px solid #222222;
+      border-radius: 60px;
+      outline: none;
+      background: #0a0a0a;
+      color: #eeeeee;
+      box-shadow: 
+        0 8px 40px rgba(0, 0, 0, 0.75),
+        0 0 28px rgba(255, 255, 255, 0.09),
+        0 0 50px rgba(255, 255, 255, 0.05);
+      transition: all 0.4s ease;
+    }
+
+    .search-box:focus {
+      border-color: #555555;
+      box-shadow: 
+        0 12px 55px rgba(0, 0, 0, 0.8),
+        0 0 40px rgba(255, 255, 255, 0.18),
+        0 0 70px rgba(255, 255, 255, 0.07);
+      background: #111111;
+    }
+
+    .search-box::placeholder {
+      color: #555555;
+    }
+
+    /* Username modal */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.96);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: #111111;
+      padding: 45px 55px;
+      border-radius: 22px;
+      border: 1px solid #333333;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 0 70px rgba(255,255,255,0.08);
+    }
+
+    .modal h2 {
+      color: #ffffff;
+      margin-bottom: 15px;
+      font-weight: 300;
+      font-size: 1.8rem;
+    }
+
+    .modal p {
+      color: #aaaaaa;
+      margin-bottom: 30px;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 16px 22px;
+      font-size: 1.25rem;
+      background: #1a1a1a;
+      border: 1px solid #444;
+      border-radius: 12px;
+      color: #eee;
+      margin-bottom: 25px;
+      outline: none;
+    }
+
+    .modal button {
+      padding: 14px 50px;
+      font-size: 1.15rem;
+      background: #333333;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .modal button:hover {
+      background: #555555;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 45px;
+      font-size: 0.93rem;
+      color: #444444;
+    }
+
+    .error {
+      color: #ff6666;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="welcome" id="welcomeMsg"></div>
+
+  <div class="header">Minimalism Is Everything</div>
+  
+  <div class="time" id="time"></div>
+  
+  <div class="weather" id="weather">Detecting weather...</div>
+
+  <div class="search-container">
+    <input 
+      type="text" 
+      class="search-box" 
+      placeholder="Search or enter URL ;3"
+      autofocus
+      id="searchInput"
+    >
+  </div>
+
+  <footer>minimalism is everything © 2026 all rights reserved</footer>
+
+  <!-- Username modal -->
+  <div class="modal" id="usernameModal">
+    <div class="modal-content">
+      <h2>Welcome aboard</h2>
+      <p>What should we call you?</p>
+      <input type="text" id="usernameInput" placeholder="Your name" maxlength="20">
+      <button onclick="saveUsername()">Continue</button>
+    </div>
+  </div>
+
+  <script>
+    // Cookie functions
+    function setCookie(name, value, days) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+    }
+
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? decodeURIComponent(match[2]) : null;
+    }
+
+    function checkUsername() {
+      const username = getCookie('username');
+      const modal = document.getElementById('usernameModal');
+      const welcome = document.getElementById('welcomeMsg');
+
+      if (username) {
+        modal.style.display = 'none';
+        welcome.textContent = `Welcome, ${username}`;
+      } else {
+        modal.style.display = 'flex';
+      }
+    }
+
+    function saveUsername() {
+      const input = document.getElementById('usernameInput');
+      let name = input.value.trim();
+      if (name === '') name = 'Explorer';
+      
+      setCookie('username', name, 365);
+      document.getElementById('usernameModal').style.display = 'none';
+      document.getElementById('welcomeMsg').textContent = `Welcome, ${name}`;
+    }
+
+    // Live Clock
+    function updateTime() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true 
+      });
+      document.getElementById('time').textContent = timeStr;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // Weather
+    async function getWeather() {
+      const weatherEl = document.getElementById('weather');
+      if (!navigator.geolocation) {
+        weatherEl.textContent = "Geolocation not supported";
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        try {
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`;
+          const res = await fetch(url);
+          const data = await res.json();
+
+          const temp = Math.round(data.current.temperature_2m);
+          const code = data.current.weather_code;
+          let condition = "Clear";
+          if ([3,45,48].includes(code)) condition = "Cloudy";
+          else if ([51,53,55,61,63,65,71,73,75,77,80,81,82,85,86].includes(code)) condition = "Rain / Snow";
+          else if ([95,96,99].includes(code)) condition = "Thunderstorm";
+
+          const city = data.timezone.split('/').pop().replace('_', ' ');
+          weatherEl.innerHTML = `${temp}°C • ${condition} • ${city}`;
+        } catch (err) {
+          weatherEl.innerHTML = '<span class="error">Weather unavailable</span>';
+        }
+      }, () => {
+        weatherEl.innerHTML = '<span class="error">Location permission denied</span>';
+      });
+    }
+
+    getWeather();
+
+    // Search
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        let query = searchInput.value.trim();
+        if (query === '') return;
+        if (query.includes('.') && !query.includes(' ')) {
+          let url = query.startsWith('http') ? query : 'https://' + query;
+          window.location.href = url;
+        } else {
+          window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        }
+      }
+    });
+
+    // Initialize
+    window.onload = checkUsername;
+  </script>
+
+</body>
+</html>
